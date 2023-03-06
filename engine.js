@@ -3,6 +3,7 @@ import "./Component.js"
 import "./Scene.js"
 import "./GameObject.js"
 import "./Transform.js"
+import "./Rectangle.js"
 
 
 
@@ -120,7 +121,7 @@ function engineUpdate() {
         for(let component of gameObject.components){
             if(component.start &&  !component.started){
                 component.start()
-                component.update()
+                component.started = true
             }
         }
     }
@@ -151,7 +152,9 @@ function engineDraw() {
 
 function start(title) {
     document.title = title
+    
     function gameLoop() {
+        
         engineUpdate()
         engineDraw()
     }

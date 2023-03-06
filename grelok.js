@@ -1,3 +1,6 @@
+import "./engine.js"
+
+
 //---------------------TITLE----------------------//
 
 class StartController extends Component {
@@ -5,7 +8,7 @@ class StartController extends Component {
     }
     update() {
         if (keysDown["Enter"]) {
-            SceneManager.changeScene(1);
+            SceneManager.changeScene(1)
         }
     }
 }
@@ -18,7 +21,7 @@ class StartDrawComponent extends Component {
 
         // Draw the background & foreground box
         ctx.fillStyle = "#303030" //Color of the background
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
         ctx.fillStyle = "black"
         ctx.fillRect(margin, margin, sizeArea - margin, sizeArea - margin)
 
@@ -73,7 +76,7 @@ class PlainDrawComponent extends Component {
 
         // Draw the background & foreground box
         ctx.fillStyle = "#303030" //Color of the background
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
         ctx.fillStyle = "#67db77" //Light-green
         ctx.fillRect(margin, margin, sizeArea - margin, sizeArea - margin)
     }
@@ -92,231 +95,66 @@ class PlainDrawGameObject extends GameObject {
     }
 }
 
+class PlayerComponent extends Component {
+    name = "PlayerComponent"
+    start(){
+        
+        this.transform.x = 250
+        console.log("updated x transform")
+        this.transform.y = 250
+        this.transform.sx = 5
+        this.transform.sy = 20
+    }
+    update(){
+        //Update the player position based on input
+        if (keysDown["w"]) {
+            this.transform.y -= 3;
+        }
+        if (keysDown["d"]) {
+            this.transform.x += 3
+        }
+        if (keysDown["a"]) {
+            this.transform.x -= 3
+        }
+        if (keysDown["s"]) {
+            this.transform.y += 3
+        }
+    }
+    draw(ctx){
+
+    }
+}
+
 class PlainScene extends Scene {
     start() {
+        
+
         this.addGameObject(new PlainControllerGameObject())
         this.addGameObject(new PlainDrawGameObject())
-    }
-}
 
-//---------------------MOUNTAIN----------------------//
-
-class MountainController extends Component {
-    start() {
-
-    }
-    update() {
-
-    }
-}
-
-class MountainDrawComponent extends Component {
-    draw(ctx) {
-
-    }
-}
-
-class MountainControllerGameObject extends GameObject {
-    start() {
-        this.addComponent(new PlainController())
+        //PLAYER SHIT
+        let playerGameObject = new GameObject("PlayerGameObject")
+        playerGameObject.addComponent(new PlayerComponent())
+         
+        let rectangle = new Rectangle()
+        playerGameObject.addComponent(rectangle)
+        
+        this.addGameObject(playerGameObject)
     }
 }
 
 
-class MountainDrawGameObject extends GameObject {
-    start() {
-        this.addComponent(new PlainDrawComponent())
-    }
-}
-
-class MountainScene extends Scene {
-    start() {
-        this.addGameObject(new PlainControllerGameObject())
-        this.addGameObject(new PlainDrawGameObject())
-    }
-}
-
-
-//---------------------SWAMP----------------------//
-
-class SwampController extends Component {
-    start() {
-
-    }
-    update() {
-
-    }
-}
-
-class SwampDrawComponent extends Component {
-    draw(ctx) {
-
-    }
-}
-
-class SwampControllerGameObject extends GameObject {
-    start() {
-        this.addComponent(new PlainController())
-    }
-}
-
-
-class SwampDrawGameObject extends GameObject {
-    start() {
-        this.addComponent(new PlainDrawComponent())
-    }
-}
-
-class SwampScene extends Scene {
-    start() {
-        this.addGameObject(new PlainControllerGameObject())
-        this.addGameObject(new PlainDrawGameObject())
-    }
-}
-
-
-//---------------------TOWN----------------------//
-
-class TownController extends Component {
-    start() {
-
-    }
-    update() {
-
-    }
-}
-
-class TownDrawComponent extends Component {
-    draw(ctx) {
-
-    }
-}
-
-class TownControllerGameObject extends GameObject {
-    start() {
-        this.addComponent(new PlainController())
-    }
-}
-
-
-class TownDrawGameObject extends GameObject {
-    start() {
-        this.addComponent(new PlainDrawComponent())
-    }
-}
-
-class TownScene extends Scene {
-    start() {
-        this.addGameObject(new PlainControllerGameObject())
-        this.addGameObject(new PlainDrawGameObject())
-    }
-}
-
-//---------------------CHAPEL----------------------//
-
-class ChapelController extends Component {
-    start() {
-
-    }
-    update() {
-
-    }
-}
-
-class ChapelDrawComponent extends Component {
-    draw(ctx) {
-
-    }
-}
-
-class ChapelControllerGameObject extends GameObject {
-    start() {
-        this.addComponent(new PlainController())
-    }
-}
-
-
-class ChapelDrawGameObject extends GameObject {
-    start() {
-        this.addComponent(new PlainDrawComponent())
-    }
-}
-
-class ChapelScene extends Scene {
-    start() {
-        this.addGameObject(new PlainControllerGameObject())
-        this.addGameObject(new PlainDrawGameObject())
-    }
-}
-
-//---------------------END----------------------//
-
-class EndController extends Component {
-    start() {
-
-    }
-    update() {
-
-    }
-}
-
-class EndDrawComponent extends Component {
-    draw(ctx) {
-
-    }
-}
-
-class EndControllerGameObject extends GameObject {
-    start() {
-        this.addComponent(new PlainController())
-    }
-}
-
-
-class EndDrawGameObject extends GameObject {
-    start() {
-        this.addComponent(new PlainDrawComponent())
-    }
-}
-
-class EndScene extends Scene {
-    start() {
-        this.addGameObject(new PlainControllerGameObject())
-        this.addGameObject(new PlainDrawGameObject())
-    }
-}
 
 let startScene = new StartScene()
 let plainScene = new PlainScene()
-let mountainScene = new MountainScene()
-let swampScene = new SwampScene()
-let chapelScene = new ChapelScene()
-let endScene = new EndScene()
+// let mountainScene = new MountainScene()
+// let swampScene = new SwampScene()
+// let chapelScene = new ChapelScene()
+// let endScene = new EndScene()
 
-SceneManager.addScene(startScene)
-SceneManager.addScene(plainScene)
-SceneManager.addScene(mountainScene)
-SceneManager.addScene(swampScene)
-SceneManager.addScene(chapelScene)
-SceneManager.addScene(endScene)
-
-//players inv
-const playersInventory = [1, 2, 3]
-
-
-const player = {
-    playPosX: 0,
-    playPosY: 0,
-    playInv: getInventory(playersInventory)
-
-}
-
-
-function getInventory(pInv) {
-    return pInv
-}
-
-
+// If wanting to view a particular screen, just have it been the only one in this array
+// The method call changeScene is broken at the moment and will need to be fixed before transitioning between each
+window.allScenes = [plainScene]
 
 //         case 1:
 //             drawScreen("#67db77") // Light Green
