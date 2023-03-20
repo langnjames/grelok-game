@@ -62,12 +62,19 @@ class StartScene extends Scene {
 //-----------------------------PLAIN-------------------------------//
 class PlainController extends Component {
     start() {
-        let playerComponent = GameObject.getObjectByName("PlayerGameObject").getComponent("PlayerComponent") 
+        
+         
     }
     handleUpdate(component, eventName) {
         if (eventName == "CharacterTouchItem") {
-            let playerGameObject = GameObject.getObjectByName("PlayerGameObject")
-            let Diamond
+            let inventoryGameObject = GameObject.getObjectByName("InventoryGameObject")
+            let inventoryComponent = inventoryGameObject.getComponent("InventoryComponent")
+            let circle = new Circle("blue")
+            inventoryComponent.addComponent(circle)
+            circle.transform.x = 550
+            circle.transform.y = 70
+            circle.transform.sx = 10
+            
         }
     }
 }
@@ -152,6 +159,13 @@ class DiamondComponent extends Component{
 
         if(Math.abs(this.transform.x - playerX) < 5 && Math.abs(this.transform.y - playerY) < 5)
         {
+            let inventoryGameObject = GameObject.getObjectByName("InventoryGameObject")
+            let circle = new Circle("blue")
+            inventoryGameObject.addComponent(circle)
+            circle.transform.x = 550
+            circle.transform.y = 70
+            circle.transform.sx = 10
+
             this.parent.destroy()
             this.updateListeners("CharacterTouchItem")
         }
