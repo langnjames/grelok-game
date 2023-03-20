@@ -15,7 +15,7 @@
 
     static setScenes(scenes){
         SceneManager.currentSceneIndex = 0
-        SceneManager.changeScene = true
+        SceneManager.changedScene = true
         SceneManager.scenes = []
         SceneManager.addScenes(scenes)
     }

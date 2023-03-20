@@ -4,9 +4,11 @@ import "./Scene.js"
 import "./GameObject.js"
 import "./Transform.js"
 import "./Rectangle.js"
+import "./Line.js"
+import "./Circle.js"
 
 
-
+//-----------------------------INPUT HANDLING---------------------------------//
 
 let canvas = document.querySelector("#canv");
 let ctx = canvas.getContext("2d");
@@ -23,8 +25,6 @@ document.addEventListener("mousedown", mouseDown);
 document.addEventListener("mouseup", mouseUp);
 document.addEventListener("mousemove", mouseMove);
 
-let scene = 0;
-
 function mouseDown(e) {
     //console.log("mouseDown: " + e.clientX + " " + e.clientY)
 }
@@ -37,37 +37,10 @@ function mouseMove(e) {
 
 function keyUp(e) {
     keysDown[e.key] = false
-    console.log(e)
-    if (e.key == "KeyA") {
-        console.log("Up Left")
-    }
-    if (e.key == "KeyD") {
-        console.log("Up Right")
-    }
-    if (e.key == "KeyW") {
-        console.log("Up UpArr")
-    }
-    if (e.key == "KeyS") {
-        console.log("Up DownArr")
-    }
-
 }
 
 function keyDown(e) {
     keysDown[e.key] = true
-    console.log(e)
-    if (e.key == "KeyA") {
-        console.log("Down Left")
-    }
-    if (e.key == "KeyD") {
-        console.log("Down Right")
-    }
-    if (e.key == "KeyW") {
-        console.log("Down UpArr")
-    }
-    if (e.key == "KeyS") {
-        console.log("Down DownArr")
-    }
     //To prevent scrolling (if needed)
     //This has to be in keyDown, not keyup
     if (e.key == " ") {
@@ -75,41 +48,19 @@ function keyDown(e) {
     }
 }
 
+//-----------------------------GAME LOOP---------------------------------//
 
-
-// //Getting the mouse position from the canvas
-// function getMousePos(canvas, event) {
-//     let rect = canvas.getBoundingClientRect()
-//     return {
-//         x: event.clientX - rect.x,
-//         y: event.clientY - rect.y
-//     };
-// }
-
-// //Helper function for getting the mousePos
-// function isInside(pos, rect) {
-//     return pos.x > rect.x && pos.x < rect.x + rect.width && pos.y < rect.y + rect.height && pos.y > rect.y
-// }
-
-// canvas.addEventListener('click', function (evt) {
-//     let mousePos = getMousePos(canvas, evt);
-//     if (isInside(mousePos, startRect)) {
-//         sceneIndex = 1;
-//     }
-//     else {
-//         sceneIndex = 0;
-//     }
-// }, false);
-
-
-
+//  Updating the engine every game loop
 function engineUpdate() {
+
+    // Getting a reference to the active scene being displayed
     let scene = SceneManager.getActiveScene()
     if (SceneManager.changedSceneFlag && scene.start) {
         scene.start()
         SceneManager.changedSceneFlag = false
     }
 
+    // If a game object can be started, start it!
     for (let gameObject of scene.gameObjects) {
         if (gameObject.start && !gameObject.started) {
             gameObject.start()
@@ -117,6 +68,7 @@ function engineUpdate() {
         }
     }
 
+    // If a component can be started, start it!
     for(let gameObject of scene.gameObjects){
         for(let component of gameObject.components){
             if(component.start &&  !component.started){
@@ -126,6 +78,16 @@ function engineUpdate() {
         }
     }
 
+    // Handling destroy here
+    let keptGameObjects = []
+    for(let gameObject of scene.gameObjects){
+        if(!gameObject.markedForDestroy){
+            keptGameObjects.push(gameObject)
+        }
+    }
+    scene.gameObjects = keptGameObjects;
+
+    // Calling update for all components that have an update function
     for(let gameObject of scene.gameObjects){
         for(let component of gameObject.components){
             if(component.update){
@@ -135,12 +97,15 @@ function engineUpdate() {
     }
 }
 
+
+//  Drawing everything for the scene every game loop
 function engineDraw() {
     canvas.width = window.innerWidth
     canvas.height = window.innerHeight
 
     let scene = SceneManager.getActiveScene()
-
+        
+    // looping through all the components and drawing each of them
     for (let gameObject of scene.gameObjects) {
         for (let component of gameObject.components) {
             if (component.draw) {
@@ -161,6 +126,9 @@ function start(title) {
 
     setInterval(gameLoop, 1000 / 25)
 }
+
+
+//------------------------TESTING SECTION-------------------------//
 
 function test(title, options = []){
     try {
