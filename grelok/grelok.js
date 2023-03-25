@@ -62,8 +62,14 @@ class StartScene extends Scene {
 //-----------------------------PLAIN-------------------------------//
 class PlainController extends Component {
     start() {
-        
-         
+
+        let playerComponent = GameObject.getObjectByName("PlayerGameObject").getComponent("PlayerGameObject")
+        let diamondGameObject = new GameObject("DiamondGameObject")
+        let diamondComponent = new DiamondComponent()
+        diamondComponent.addListener(this)
+        diamondComponent.addListener(playerComponent)
+        this.addListener(diamondComponent)
+
     }
     handleUpdate(component, eventName) {
         if (eventName == "CharacterTouchItem") {
@@ -74,7 +80,7 @@ class PlainController extends Component {
             circle.transform.x = 550
             circle.transform.y = 70
             circle.transform.sx = 10
-            
+
         }
     }
 }
@@ -106,10 +112,10 @@ class PlayerComponent extends Component {
         this.transform.y = 250
         this.transform.sx = 5
         this.transform.sy = 20
-        
+
     }
     update() {
-        
+
         // Update player position based on input keys
         if (keysDown["w"]) {
             this.transform.y -= 3; // Upwards
@@ -128,13 +134,13 @@ class PlayerComponent extends Component {
         if (this.transform.y < 10) {
             SceneManager.changeScene(2) // Going North changes to Mountain
         }
-        if (this.transform.x < 10){
+        if (this.transform.x < 10) {
             SceneManager.changeScene(3) // Going West changes to Swamp
         }
-        if (this.transform.x > 490){
+        if (this.transform.x > 490) {
             SceneManager.changeScene(4) // Going East changes to Chapel
         }
-        if (this.transform.y > 490){
+        if (this.transform.y > 490) {
             SceneManager.changeScene(5) // Going South changes to Town
         }
     }
@@ -143,8 +149,8 @@ class PlayerComponent extends Component {
     }
 }
 
-class DiamondComponent extends Component{
-    start(){
+class DiamondComponent extends Component {
+    start() {
         let circle = new Circle("blue")
         this.parent.addComponent(circle)
         this.transform.x = 50
@@ -152,19 +158,18 @@ class DiamondComponent extends Component{
         this.transform.sx = 5
 
     }
-    update(){
-        let playerComponent = GameObject.getObjectByName("PlayerGameObject").getComponent("PlayerComponent") 
+    update() {
+        let playerComponent = GameObject.getObjectByName("PlayerGameObject").getComponent("PlayerComponent")
         let playerX = playerComponent.transform.x
         let playerY = playerComponent.transform.y
 
-        if(Math.abs(this.transform.x - playerX) < 5 && Math.abs(this.transform.y - playerY) < 5)
-        {
-            let inventoryGameObject = GameObject.getObjectByName("InventoryGameObject")
-            let circle = new Circle("blue")
-            inventoryGameObject.addComponent(circle)
-            circle.transform.x = 550
-            circle.transform.y = 70
-            circle.transform.sx = 10
+        if (Math.abs(this.transform.x - playerX) < 5 && Math.abs(this.transform.y - playerY) < 5) {
+            // let inventoryGameObject = GameObject.getObjectByName("InventoryGameObject")
+            // let circle = new Circle("blue")
+            // inventoryGameObject.addComponent(circle)
+            // circle.transform.x = 550
+            // circle.transform.y = 70
+            // circle.transform.sx = 10
 
             this.parent.destroy()
             this.updateListeners("CharacterTouchItem")
@@ -172,27 +177,27 @@ class DiamondComponent extends Component{
     }
 }
 
-class InventoryComponent extends Component{
-    start(){
-        
-    }
-    handleUpdate(component, eventName){
+class InventoryComponent extends Component {
+    start() {
 
     }
-    update(){
-        
+    handleUpdate(component, eventName) {
+
     }
-    draw(ctx){
+    update() {
+
+    }
+    draw(ctx) {
         ctx.fillStyle = "Black"
-        ctx.fillRect(520,10, 150, 375)
+        ctx.fillRect(520, 10, 150, 375)
 
         // Create Inventory Title
         ctx.font = "20px Georgia"
         ctx.fillStyle = "White";
         ctx.fillText("Inventory", 550, 30);
 
-        
-        
+
+
     }
 }
 
@@ -230,7 +235,7 @@ class MountainSceneDrawComponent extends Component {
 
 class MountainScene extends Scene {
     start() {
-        this.addGameObject(new GameObject().addComponent(new MountainSceneDrawComponent())) 
+        this.addGameObject(new GameObject().addComponent(new MountainSceneDrawComponent()))
     }
 }
 
@@ -269,7 +274,7 @@ class ChapelSceneDrawComponent extends Component {
         // Draw the background & foreground box
         ctx.fillStyle = "#303030" //Color of the background
         ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-        ctx.fillStyle = "#3b2619" 
+        ctx.fillStyle = "#3b2619"
         ctx.fillRect(margin, margin, sizeArea - margin, sizeArea - margin)
     }
 }
@@ -292,7 +297,7 @@ class TownSceneDrawComponent extends Component {
         // Draw the background & foreground box
         ctx.fillStyle = "#303030" //Color of the background
         ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-        ctx.fillStyle = "#C2B280" 
+        ctx.fillStyle = "#C2B280"
         ctx.fillRect(margin, margin, sizeArea - margin, sizeArea - margin)
     }
 }
