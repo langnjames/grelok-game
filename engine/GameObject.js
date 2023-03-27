@@ -5,7 +5,9 @@ class GameObject {
 
     started = false
 
-    markedForDestroy = false;
+    markedForDestroy = false
+
+    markedDoDestroyOnLoad = false
 
     constructor(name) {
         this.name = name
@@ -48,8 +50,8 @@ class GameObject {
         this.markedForDestroy = true
     }
 
-    dontDestroy(){
-        this.markedForDestroy = false
+    dontDestroyOnLoad(){
+        this.markedDoDestroyOnLoad = false
     }
     
 

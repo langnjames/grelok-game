@@ -58,6 +58,15 @@ function engineUpdate() {
     if (SceneManager.changedSceneFlag && scene.start) {
         scene.start()
         SceneManager.changedSceneFlag = false
+
+        let previousScene = SceneManager.getPreviousScene()
+        if(previousScene){
+            for(let gameObject of previousScene.gameObjects){
+                if(gameObject.markedDoNotDestroyOnLoad){
+                    scene.gameObjects.push(gameObject)
+                }
+            }
+        }
     }
 
     // If a game object can be started, start it!
