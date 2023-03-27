@@ -45,5 +45,5 @@ class Circle extends Component {
   }
 }
 
-// This adds the circle to the global namespace to be called in different areas
+/** This adds the circle to the global namespace to be called in different areas */
 window.Circle = Circle;
