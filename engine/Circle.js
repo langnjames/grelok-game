@@ -15,7 +15,7 @@ class Circle extends Component {
   lineWidth
 
   /**
-   * Create a rectangle component
+   * Create a circle component
    * @param {Color} fillStyle Optional color for fillstyle
    * @param {Color} strokeStyle Optional color for outlines of rect
    * @param {Number} lineWidth Optional size for width of outline
