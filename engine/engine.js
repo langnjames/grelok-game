@@ -6,6 +6,8 @@ import "./Transform.js"
 import "./Rectangle.js"
 import "./Line.js"
 import "./Circle.js"
+import "./Vector2.js"
+import "./Camera.js"
 
 
 //-----------------------------INPUT HANDLING---------------------------------//
