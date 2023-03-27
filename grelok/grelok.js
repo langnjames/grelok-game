@@ -1,60 +1,34 @@
+/** Imports engine and engine-level files for usage in game */
 import "/engine/engine.js"
 
-
-
-//---------------------TITLE----------------------//
-
+/**
+ * ----------------------------TITLE-------------------------------
+ */
 class StartController extends Component {
     start() {
     }
     update() {
+        /** If user presses enter key then we start the game 
+         * and change the scene to the first scene of the game
+         */
         if (keysDown["Enter"]) {
             SceneManager.changeScene(1)
         }
     }
 }
 
-class StartDrawComponent extends Component {
-    draw(ctx) {
-        // Defining sizes for area to draw
-        let margin = 10;
-        let sizeArea = 500;
-
-        // Draw the background & foreground box
-        ctx.fillStyle = "#303030" //Color of the background
-        ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-        ctx.fillStyle = "black"
-        ctx.fillRect(margin, margin, sizeArea - margin, sizeArea - margin)
-
-        //Create Title on Page
-        ctx.font = "52px Georgia"
-        ctx.fillStyle = "White";
-        ctx.fillText("Reign of Grelok", 75, (sizeArea - margin) / 2);
-
-        //Subtitle
-        ctx.fillStyle = "grey"
-        ctx.font = "28px Georgia";
-        ctx.fillText("Press Enter to play", 135, 290);
-    }
-}
-
-class StartControllerGameObject extends GameObject {
-    start() {
-        this.addComponent(new StartController())
-    }
-}
-
-
-class StartDrawGameObject extends GameObject {
-    start() {
-        this.addComponent(new StartDrawComponent())
-    }
-}
-
 class StartScene extends Scene {
+    /** Calls constructor for camera to display grey background */
+    constructor(){
+        super("#303030")
+    }
     start() {
-        this.addGameObject(new StartControllerGameObject())
-        this.addGameObject(new StartDrawGameObject())
+        /** Creates Controller Game Object and  Component for Start Scene */
+        this.addGameObject(new GameObject("StartControllerGameObject").addComponent(new StartController()))
+         /** Creates Text Game Object and  Component for Start Scene */
+        this.addGameObject(new GameObject("StartTitleGameObject").addComponent(new Text("Reign of Grelok", "white", "52px Georgia")), new Vector2(75, 245))
+         /** Creates Text Game Object and  Component for Start Scene */
+        this.addGameObject(new GameObject("StartSubtitleGameObject").addComponent(new Text("Press Enter to Play", "grey", "28px Georgia")), new Vector2(135, 290) )
     }
 }
 
@@ -63,43 +37,36 @@ class StartScene extends Scene {
 class PlainController extends Component {
     start() {
 
-        let playerComponent = GameObject.getObjectByName("PlayerGameObject").getComponent("PlayerGameObject")
-        let diamondGameObject = new GameObject("DiamondGameObject")
-        let diamondComponent = new DiamondComponent()
+        /** Intializes PlayerComponent in this Controller in order to listen for handlers */
+        let playerComponent = GameObject.getObjectByName("PlayerGameObject").getComponent("PlayerComponent")
+        playerComponent.addListener(this)
+
+        /** Initializes DiamondComponent in this Controller in order to listen for handlers */
+         let diamondComponent = GameObject.getObjectByName("DiamondGameObject").getComponent("DiamondComponent")
         diamondComponent.addListener(this)
-        diamondComponent.addListener(playerComponent)
-        this.addListener(diamondComponent)
 
     }
     handleUpdate(component, eventName) {
-        if (eventName == "CharacterTouchItem") {
-            let inventoryGameObject = GameObject.getObjectByName("InventoryGameObject")
-            let inventoryComponent = inventoryGameObject.getComponent("InventoryComponent")
-            let circle = new Circle("blue")
-            inventoryComponent.addComponent(circle)
-            circle.transform.x = 550
-            circle.transform.y = 70
-            circle.transform.sx = 10
-
+        if (eventName == "PlayerTouchItem") {
+            let inventoryComponent = GameObject.getObjectByName("InventoryGameObject").getComponent("InventoryComponent")
+            
         }
+
+        if (eventName == "PlayerNorth") {
+            SceneManager.changeScene(2)
+        }
+        if (eventName == "PlayerWest") {
+            SceneManager.changeScene(3)
+        }
+        if (eventName == "PlayerEast") {
+            SceneManager.changeScene(4)
+        }
+        if (eventName == "PlayerSouth") {
+            SceneManager.changeScene(5)
+        }
+
     }
 }
-
-
-class PlainDrawComponent extends Component {
-    draw(ctx) {
-        // Defining sizes for area to draw
-        let margin = 10;
-        let sizeArea = 500;
-
-        // Draw the background & foreground box
-        ctx.fillStyle = "#303030" //Color of the background
-        ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-        ctx.fillStyle = "#67db77" //Light-green
-        ctx.fillRect(margin, margin, sizeArea - margin, sizeArea - margin)
-    }
-}
-
 
 class PlayerComponent extends Component {
     name = "PlayerComponent"
@@ -107,6 +74,7 @@ class PlayerComponent extends Component {
         // Creating rectangle component from engine to be used for the player
         let rectangle = new Rectangle()
         this.parent.addComponent(rectangle)
+        this.parent.doNotDestroyOnLoad()
         // Modifies the transforms of the rectangle player component
         this.transform.x = 250
         this.transform.y = 250
@@ -118,216 +86,167 @@ class PlayerComponent extends Component {
 
         // Update player position based on input keys
         if (keysDown["w"]) {
-            this.transform.y -= 3; // Upwards
+            this.transform.y -= 5; // Upwards
         }
         if (keysDown["d"]) {
-            this.transform.x += 3 // Downwards
+            this.transform.x += 5 // Downwards
         }
         if (keysDown["a"]) {
-            this.transform.x -= 3 // Left
+            this.transform.x -= 5 // Left
         }
         if (keysDown["s"]) {
-            this.transform.y += 3 // Right
+            this.transform.y += 5 // Right
         }
 
         //Checking for collision with the walls to move to different area
         if (this.transform.y < 10) {
-            SceneManager.changeScene(2) // Going North changes to Mountain
+            this.updateListeners("PlayerNorth") // Going North changes to Mountain
         }
         if (this.transform.x < 10) {
-            SceneManager.changeScene(3) // Going West changes to Swamp
+            this.updateListeners("PlayerWest") // Going West changes to Swamp
         }
         if (this.transform.x > 490) {
-            SceneManager.changeScene(4) // Going East changes to Chapel
+            this.updateListeners("PlayerEast") // Going East changes to Chapel
         }
         if (this.transform.y > 490) {
-            SceneManager.changeScene(5) // Going South changes to Town
+            this.updateListeners("PlayerSouth") // Going South changes to Town
         }
-    }
-    draw(ctx) {
-
     }
 }
 
 class DiamondComponent extends Component {
+    name = "DiamondComponent"
     start() {
         let circle = new Circle("blue")
         this.parent.addComponent(circle)
         this.transform.x = 50
         this.transform.y = 50
         this.transform.sx = 5
-
+        this.parent.doNotDestroyOnLoad()
     }
     update() {
-        let playerComponent = GameObject.getObjectByName("PlayerGameObject").getComponent("PlayerComponent")
-        let playerX = playerComponent.transform.x
-        let playerY = playerComponent.transform.y
+        // let playerComponent = GameObject.getObjectByName("PlayerGameObject").getComponent("PlayerComponent")
+        // let playerX = playerComponent.transform.x
+        // let playerY = playerComponent.transform.y
 
-        if (Math.abs(this.transform.x - playerX) < 5 && Math.abs(this.transform.y - playerY) < 5) {
-            // let inventoryGameObject = GameObject.getObjectByName("InventoryGameObject")
-            // let circle = new Circle("blue")
-            // inventoryGameObject.addComponent(circle)
-            // circle.transform.x = 550
-            // circle.transform.y = 70
-            // circle.transform.sx = 10
+        // if (Math.abs(this.transform.x - playerX) < 5 && Math.abs(this.transform.y - playerY) < 5) {
+        
 
-            this.parent.destroy()
-            this.updateListeners("CharacterTouchItem")
-        }
+            
+        //     this.updateListeners("PlayerTouchItem")
+        // }
     }
 }
 
 class InventoryComponent extends Component {
+    name = "InventoryComponent"
     start() {
-
+        this.parent.doNotDestroyOnLoad()
+        GameObject.getObjectByName("InventoryBackgroundGameObject").doNotDestroyOnLoad()
+        GameObject.getObjectByName("InventoryTitleGameObject").doNotDestroyOnLoad()
+        let inventoryItems = []
     }
     handleUpdate(component, eventName) {
-
+        if (eventName == "PlayerTouchItem") {
+            let inventoryComponent = GameObject.getObjectByName("InventoryGameObject").getComponent("InventoryComponent")
+            
+        }
     }
     update() {
-
-    }
-    draw(ctx) {
-        ctx.fillStyle = "Black"
-        ctx.fillRect(520, 10, 150, 375)
-
-        // Create Inventory Title
-        ctx.font = "20px Georgia"
-        ctx.fillStyle = "White";
-        ctx.fillText("Inventory", 550, 30);
-
-
-
+        // let diamondGameObject = GameObject.getObjectByName("DiamondGameObject")
+        // let diamondComponent = diamondGameObject.getComponent("DiamondComponent")
+        
+        
     }
 }
 
 class PlainScene extends Scene {
+    /** Calls constructor for camera to display grey background */
+    constructor(){
+        super("#303030")
+    }
     start() {
-        // Adds a controller Game Object and Component to the scene
+        /** Draws background of the game onto the scene */
+        this.addGameObject(new GameObject("DrawBackgroundGameObject").addComponent(new Rectangle("#67db77")), new Vector2(250, 250), new Vector2(500,500))
+        /** Adds a controller Game Object and Component to the scene */ 
         this.addGameObject(new GameObject("ControllerGameObject").addComponent(new PlainController()))
-        // Adds a Drawing Game Object and Component to the scene
-        this.addGameObject(new GameObject("PlainDrawGameObject").addComponent(new PlainDrawComponent()))
-        // Adds a Player Game Object and Component to the scene
-        this.addGameObject(new GameObject("PlayerGameObject").addComponent(new PlayerComponent()))
-        // Adds an Diamond Game Object and Component to the scene
-        this.addGameObject(new GameObject("DiamondGameObject").addComponent(new DiamondComponent()))
-        // Adds an Inventory Game Object and Component to the scene
-        this.addGameObject(new GameObject("InventoryGameObject").addComponent(new InventoryComponent()))
+        // /** Adds a Player Game Object and Component to the scene */
+         this.addGameObject(new GameObject("PlayerGameObject").addComponent(new PlayerComponent()))
+        // /** Adds an Diamond Game Object and Component to the scene */
+         this.addGameObject(new GameObject("DiamondGameObject").addComponent(new DiamondComponent()))
+        // /** Adds an Inventory Game Object and Component to the scene */
+         this.addGameObject(new GameObject("InventoryGameObject").addComponent(new InventoryComponent()))
+         this.addGameObject(new GameObject("InventoryBackgroundGameObject").addComponent(new Rectangle("black")), new Vector2(575, 250), new Vector2(125, 500))
+         this.addGameObject(new GameObject("InventoryTitleGameObject").addComponent(new Text("Inventory", "white", "20px Georgia")), new Vector2(530, 30))
+
+
+        
     }
 }
 
 //-------------------------MOUNTAIN SCENE---------------------------//
 
+class GemComponent extends Component{
+    start(){
 
-class MountainSceneDrawComponent extends Component {
-    draw(ctx) {
-        // Defining sizes for area to draw
-        let margin = 10;
-        let sizeArea = 500;
-
-        // Draw the background & foreground box
-        ctx.fillStyle = "#303030" //Color of the background
-        ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-        ctx.fillStyle = "#5a5c5a" //Grey
-        ctx.fillRect(margin, margin, sizeArea - margin, sizeArea - margin)
     }
 }
 
 class MountainScene extends Scene {
+    constructor(){
+        super("#303030")
+    }
     start() {
-        this.addGameObject(new GameObject().addComponent(new MountainSceneDrawComponent()))
+        this.addGameObject(new GameObject("DrawBackgroundGameObject").addComponent(new Rectangle("#5a5c5a")), new Vector2(250, 250), new Vector2(500,500))
+        this.addGameObject(
+            new GameObject("GemGameObject")
+            .addComponent(new GemComponent())
+            .addComponent(new Circle()), new Vector2(75, 125), new Vector2(5, 5))
+
+        
+
     }
 }
 
 //-------------------------SWAMP SCENE---------------------------//
-
-
-class SwampSceneDrawComponent extends Component {
-    draw(ctx) {
-        // Defining sizes for area to draw
-        let margin = 10;
-        let sizeArea = 500;
-
-        // Draw the background & foreground box
-        ctx.fillStyle = "#303030" //Color of the background
-        ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-        ctx.fillStyle = "#142b17" //Dark Green
-        ctx.fillRect(margin, margin, sizeArea - margin, sizeArea - margin)
-    }
-}
-
 class SwampScene extends Scene {
+    constructor(){
+        super("#303030")
+    }
     start() {
-        this.addGameObject(new GameObject().addComponent(new SwampSceneDrawComponent()))
+        this.addGameObject(new GameObject("DrawBackgroundGameObject").addComponent(new Rectangle("#142b17")), new Vector2(250, 250), new Vector2(500,500))
+        this.addGameObject(new GameObject("DrawTowerGameObject").addComponent(new Rectangle("grey")), new Vector2(10,300), new Vector2(100, 300))
+        this.addGameObject(new GameObject("DrawTreeGameObject").addComponent(new Rectangle("#211405")), new Vector2(200, 200), new Vector2(15, 75))
     }
 }
 
 //-------------------------CHAPEL SCENE---------------------------//
-
-
-class ChapelSceneDrawComponent extends Component {
-    draw(ctx) {
-        // Defining sizes for area to draw
-        let margin = 10;
-        let sizeArea = 500;
-
-        // Draw the background & foreground box
-        ctx.fillStyle = "#303030" //Color of the background
-        ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-        ctx.fillStyle = "#3b2619"
-        ctx.fillRect(margin, margin, sizeArea - margin, sizeArea - margin)
-    }
-}
-
 class ChapelScene extends Scene {
+    constructor(){
+        super("#303030")
+    }
     start() {
-        this.addGameObject(new GameObject().addComponent(new ChapelSceneDrawComponent()))
+        this.addGameObject(new GameObject("DrawBackgroundGameObject").addComponent(new Rectangle("#3b2619")), new Vector2(250, 250), new Vector2(500,500))
     }
 }
 
 //-------------------------TOWN SCENE---------------------------//
-
-
-class TownSceneDrawComponent extends Component {
-    draw(ctx) {
-        // Defining sizes for area to draw
-        let margin = 10;
-        let sizeArea = 500;
-
-        // Draw the background & foreground box
-        ctx.fillStyle = "#303030" //Color of the background
-        ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-        ctx.fillStyle = "#C2B280"
-        ctx.fillRect(margin, margin, sizeArea - margin, sizeArea - margin)
-    }
-}
-
 class TownScene extends Scene {
+    constructor(){
+        super("#303030")
+    }
     start() {
-        this.addGameObject(new GameObject().addComponent(new TownSceneDrawComponent()))
+        this.addGameObject(new GameObject("DrawBackgroundGameObject").addComponent(new Rectangle("#C2B280")), new Vector2(250, 250), new Vector2(500,500))
     }
 }
 
 //-------------------------END SCENE---------------------------//
-
-
-class EndSceneDrawComponent extends Component {
-    draw(ctx) {
-        // Defining sizes for area to draw
-        let margin = 10;
-        let sizeArea = 500;
-
-        // Draw the background & foreground box
-        ctx.fillStyle = "#303030" //Color of the background
-        ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-        ctx.fillStyle = "#000000" //Grey
-        ctx.fillRect(margin, margin, sizeArea - margin, sizeArea - margin)
-    }
-}
-
 class EndScene extends Scene {
+    constructor(){
+        super("#303030")
+    }
     start() {
-        this.addGameObject(new GameObject().addComponent(new EndSceneDrawComponent()))
+        this.addGameObject(new GameObject("DrawBackgroundGameObject").addComponent(new Rectangle("#000000")), new Vector2(250, 250), new Vector2(500,500))
     }
 }
 

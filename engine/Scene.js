@@ -10,9 +10,9 @@ class Scene{
      * Adds the camera to the scene
      * @param {Color} fillStyle color for the camera, default: magenta
      */
-    //  constructor(fillStyle = "magenta"){
-    //      this.addGameObject(new GameObject("CameraGameObject").addComponent(new Camera(fillStyle)))
-    //  }
+     constructor(fillStyle = "magenta"){
+         this.addGameObject(new GameObject("CameraGameObject").addComponent(new Camera(fillStyle)))
+     }
 
     /**
      * Adds a game object to a scene

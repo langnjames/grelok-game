@@ -93,8 +93,9 @@ class GameObject {
      * Sets the flag on the game object to be persistent through the next scene
      * Makes sure that game object is not destroyed on the next pass
      */
-    dontDestroyOnLoad(){
-        this.markedDoDestroyOnLoad = false
+    doNotDestroyOnLoad(){
+        this.markedDoDestroyOnLoad = true
+
     }
     
 

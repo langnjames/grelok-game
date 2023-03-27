@@ -8,6 +8,7 @@ import "./Line.js"
 import "./Circle.js"
 import "./Vector2.js"
 import "./Camera.js"
+import "./Text.js"
 
 
 //-----------------------------INPUT HANDLING---------------------------------//
@@ -58,8 +59,9 @@ function engineUpdate() {
     // Getting a reference to the active scene being displayed
     let scene = SceneManager.getActiveScene()
     if (SceneManager.changedSceneFlag && scene.start) {
-        scene.start()
-        SceneManager.changedSceneFlag = false
+        let camera = scene.gameObjects[0]
+        scene.gameObjects = []
+        scene.gameObjects.push(camera)
 
         /** Loops through the objects from the previous scene
          * to see which ones need to be preserved
@@ -67,7 +69,7 @@ function engineUpdate() {
         let previousScene = SceneManager.getPreviousScene()
         if(previousScene){
             for(let gameObject of previousScene.gameObjects){
-                if(gameObject.markedDoNotDestroyOnLoad){
+                if(gameObject.markedDoDestroyOnLoad){
                     scene.gameObjects.push(gameObject)
                 }
             }

@@ -27,7 +27,7 @@ class Camera extends Component{
         ctx.fillStyle = this.fillStyle
 
         /** Draws the camera */
-        ctx.fillStyle(0, 0, ctx.canvas.width, ctx.canvas.height)
+        ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height)
     }
 }
 
