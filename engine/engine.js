@@ -61,6 +61,9 @@ function engineUpdate() {
         scene.start()
         SceneManager.changedSceneFlag = false
 
+        /** Loops through the objects from the previous scene
+         * to see which ones need to be preserved
+         */
         let previousScene = SceneManager.getPreviousScene()
         if(previousScene){
             for(let gameObject of previousScene.gameObjects){
@@ -69,6 +72,9 @@ function engineUpdate() {
                 }
             }
         }
+
+        scene.start()
+        SceneManager.changedSceneFlag = false
     }
 
     // If a game object can be started, start it!
@@ -126,6 +132,10 @@ function engineDraw() {
     }
 }
 
+/**
+ * Start the game and set the browser title
+ * @param {String} title The title of the browser window
+ */
 function start(title) {
     document.title = title
     
@@ -139,61 +149,9 @@ function start(title) {
 }
 
 
-//------------------------TESTING SECTION-------------------------//
-
-function test(title, options = []){
-    try {
-        document.title = title
-
-        let maxFrames = options.maxFrames ? options.maxFrames : 100
-
-        for (let i = 0; i < maxFrames; i++){
-            engineUpdate()
-            engineDraw()
-        }
-
-        if (options.done){
-            options.done(ctx)
-        }
-    } catch (exception){
-        failtest()
-
-        throw exception;
-    }
-}
-
-function failTest(){
-    ctx.font = ""
-    ctx.fillText("❌", 9, 20)
-    console.log("An exception was thrown")
-}
-
-let verboseDebug = true
-
-function passTest(description){
-    if(verboseDebug){
-        console.log("Passed test: " + description)
-    }
-}
-
-function passTests() {
-    ctx.font = ""
-    ctx.fillText("", 9, 20)
-    console.log("Called passTests")
-}
-
-function assert(boolean, description = ""){
-    if(!boolean){
-        failTest(description)
-    }
-    else {
-        if(description)
-            passTest(description)
-    }
-}
-
 window.start = start
-window.test = test
-window.assert = assert
-window.passTests = passTests
+
+window.engineUpdate = engineUpdate
+window.engineDraw = engineDraw
+
 window.keysDown = keysDown
