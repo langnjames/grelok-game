@@ -3,16 +3,16 @@
  */
 
 class Rectangle extends Component {
-    //  The name of the rect, defaults to rectangle.
+    /* The name of the rect, defaults to rectangle. */  
     name = "Rectangle"
 
-    // The fill color of the rect, defaults to white.
+    /*  The fill color of the rect, defaults to white. */
     fillStyle
         
-    // The color of the stroke for the rect, defaults to transparent.
+    /* The color of the stroke for the rect, defaults to transparent. */
     strokeStyle
 
-    // The width of the stroke for the rect, defaults to 1.
+    /* The width of the stroke for the rect, defaults to 1. */
     lineWidth
 
     /**
@@ -33,12 +33,12 @@ class Rectangle extends Component {
     * @param {2DContext} ctx The context to draw to.
     */
     draw(ctx){
-        // Sets the style that was given to values in constructor
+        /* Sets the style that was given to values in constructor */
         ctx.fillStyle = this.fillStyle
         ctx.strokeStyle = this.strokeStyle
         ctx.lineWidth = this.lineWidth
 
-        //Draw the rectangle
+        /* Draw the rectangle */
         ctx.beginPath()
         ctx.rect(-this.transform.sx/2 + this.transform.x, -this.transform.sy/2 + this.transform.y, this.transform.sx, this.transform.sy)  
         ctx.fill()
@@ -46,5 +46,5 @@ class Rectangle extends Component {
     }
 }
 
-// This adds the rectangle to the global namespace to be called in different areas
+/* This adds the rectangle to the global namespace to be called in different areas */
 window.Rectangle = Rectangle

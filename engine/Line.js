@@ -2,13 +2,13 @@
  * A line engine-level component
  */
 class Line extends Component {
-    // Name of the component
+    /* Name of the component */
     name = "Line"
 
-    // The color of the stroke, defaults to transparent.
+    /* The color of the stroke, defaults to transparent. */
     strokeStyle
 
-    // The width of the stroke, defaults to 1.
+    /* The width of the stroke, defaults to 1. */
     lineWidth
 
     /**
@@ -37,7 +37,7 @@ class Line extends Component {
         let endX = Math.cos(this.transform.r) * this.transform.sx + this.transform.x
         let endY = Math.sin(this.transform.r) * this.transform.sy + this.transform.y 
 
-        // Draw the line
+        /* Draw the line */
         ctx.beginPath()
         ctx.moveTo(endX, endY)
         ctx.lineTo(startX, startY)
@@ -45,5 +45,5 @@ class Line extends Component {
     }
 }
 
-// Adds the line to the global namespace
+/* Adds Line to the global namespace */
 window.Line = Line
