@@ -71,6 +71,11 @@ function engineUpdate() {
             for(let gameObject of previousScene.gameObjects){
                 if(gameObject.markedDoDestroyOnLoad){
                     scene.gameObjects.push(gameObject)
+                    for (let component of gameObject.component){
+                        if(component.onSceneLoad){
+                            component.onSceneLoad()
+                        }
+                    }
                 }
             }
         }

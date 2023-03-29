@@ -82,6 +82,20 @@ class PlayerComponent extends Component {
         this.transform.sy = 20
 
     }
+    onSceneLoad(){
+        if(this.transform.y < 10){
+            this.transform.y = 480
+        }
+        if(this.transform.x < 10){
+            this.transform.x = 480 
+        }
+        if(this.transform.x > 490){
+            this.transform.y = 20
+        }
+        if(this.transform.x > 490){
+            this.transform.x = 10
+        }
+    }
     update() {
 
         // Update player position based on input keys
@@ -122,7 +136,7 @@ class DiamondComponent extends Component {
         this.transform.x = 50
         this.transform.y = 50
         this.transform.sx = 5
-        this.parent.doNotDestroyOnLoad()
+        //this.parent.doNotDestroyOnLoad()
     }
     update() {
         // let playerComponent = GameObject.getObjectByName("PlayerGameObject").getComponent("PlayerComponent")
@@ -141,9 +155,9 @@ class DiamondComponent extends Component {
 class InventoryComponent extends Component {
     name = "InventoryComponent"
     start() {
-        this.parent.doNotDestroyOnLoad()
-        GameObject.getObjectByName("InventoryBackgroundGameObject").doNotDestroyOnLoad()
-        GameObject.getObjectByName("InventoryTitleGameObject").doNotDestroyOnLoad()
+        // this.parent.doNotDestroyOnLoad()
+        // GameObject.getObjectByName("InventoryBackgroundGameObject").doNotDestroyOnLoad()
+        // GameObject.getObjectByName("InventoryTitleGameObject").doNotDestroyOnLoad()
         let inventoryItems = []
     }
     handleUpdate(component, eventName) {
